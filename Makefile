@@ -1,5 +1,5 @@
 all:
-	g++ -o ./example/main.exe ./example/main8.cpp -std=c++11 -I./src
+	g++ -o ./example/main.exe ./example/example01.cpp -std=c++11 -I./src
 
 dox:
 	doxygen doxygen.config

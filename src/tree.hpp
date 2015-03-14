@@ -8,7 +8,7 @@
  *
  * @section LICENSE
  *
- * Copyright (c) 2014, Bruno Garbe Jr.
+ * Copyright (c) 2015, Bruno Garbe Jr.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -235,34 +235,6 @@ public:
     A more detailed class description.
 */
 
-/*
-Member Functions:
-
-	Constructors
-	Destructor
-	operator=
-
-	Capacity:
-		size
-		empty
-
-	Modifiers:
-		insert
-		erase
-		swap
-		clear
-		emplace ?
-		
-	Allocator
-		get_allocator
-
-Non-member function overloads
-
-		relational operators
-		swap
-
-*/
-
 
 // Declare a custom container
 template<typename t_type, class t_allocator = std::allocator<t_type> >
@@ -284,6 +256,7 @@ public:
     node_pointer mv_root;
 
 public:
+	// Constructors, destructors and operator=
     tree()
         : mv_root(nullptr)
     {}
@@ -291,16 +264,30 @@ public:
     ~tree()
     {}
 
+/*
+	template<>
+  MyArray<T>::operator=( const MyArray& rhs ) {
+      // First, make a copy of the right-hand side
+      MyArray tmp( rhs );
+
+      // Now, swap the data members with the temporary:
+      std::swap( numElements, tmp.numElements );
+      std::swap( pElements, tmp.pElements );
+
+      return *this;
+  }
+*/
+
+	// Allocator
+	/*
+	get_allocator
+	*/
+	
+	// Capacity methods
     size_type size() const
     {
 		assert (0 == 1);
         return 0;
-    }
-
-    size_type max_size() const
-    {
-		assert (0 == 1);
-        return 16;
     }
 
     bool empty() const
@@ -308,6 +295,13 @@ public:
         assert (0 == 1);
         return (1 > 0 ? false : true);
     }
+
+
+	//Modifiers:
+	void clear()
+	{
+		assert (0 == 1);
+	}
 	
 	tree_iterator<value_type, allocator_type> set_root(value_type x)
     {
@@ -324,7 +318,7 @@ public:
 
 	
 	template<typename t_iterator>
-	t_iterator add_node(const t_iterator& n_parent, value_type x)
+	t_iterator insert_child(const t_iterator& n_parent, value_type x)
     {
 
         node_pointer n = new node_type(x);
@@ -348,7 +342,34 @@ public:
 		return tree_iterator<value_type, allocator_type>(n);
     }
 
+	template<typename t_iterator>
+	t_iterator insert_sibling(const t_iterator& n_sibling, value_type x)
+    {
+		assert (0 == 1);
+
+        node_pointer n = new node_type(x);
+		return tree_iterator<value_type, allocator_type>(n);
+    }
+
+	template<typename t_iterator>
+	void erase(const t_iterator& n_sibling)
+    {
+		assert (0 == 1);
+    }
+
+	template<typename t_iterator>
+	void swap(const t_iterator& n_iter1, const t_iterator& n_iter2)
+    {
+		assert (0 == 1);
+    }
+
 }; // end of class tree
+
+/*
+Non-member function overloads
+		relational operators
+		swap
+*/
 
 
 // Declare a custom bidirectional iterator

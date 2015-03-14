@@ -10,7 +10,6 @@ using namespace std;
 
 #include "../src/tree.hpp"
 
-// functor to print the output of the int
 struct print
 {
     void operator ()(int x)
@@ -102,11 +101,11 @@ v.swap(std::vector<int>(v));
 	tree<int> ts;
 	tree_iterator<int> root = ts.set_root(0);
 	
-	/*
+	
 	cout << *root << endl;
-	tree_iterator<int> n1 = ts.add_node(root, 1);
-	tree_iterator<int> n2 = ts.add_node(root, 2);
-	auto n3 = ts.add_node(root, 3);
+	tree_iterator<int> n1 = ts.insert_child(root, 1);
+	tree_iterator<int> n2 = ts.insert_child(root, 2);
+	auto n3 = ts.insert_child(root, 3);
 	
 	cout << *n1 << endl;
 	cout << *n2 << endl;
@@ -151,6 +150,5 @@ v.swap(std::vector<int>(v));
     cout << *cResult << endl;
     cout << endl;
 	
-*/
     return 0;
 }
