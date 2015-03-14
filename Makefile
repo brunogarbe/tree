@@ -1,5 +1,10 @@
 all:
-	g++ -o ./example/main.exe ./example/example01.cpp -std=c++11 -I./src
+	g++ -o ./bin/main.exe ./example/example01.cpp -std=c++11 -I./src
+
+test: ./bin/test01.exe
+
+./bin/test01.exe: ./test/test01.cpp ./src/tree.hpp
+	g++ -o ./bin/test01.exe ./test/test01.cpp -std=c++11 -I./src
 
 dox:
 	doxygen doxygen.config
