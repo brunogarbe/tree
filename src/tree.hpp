@@ -78,7 +78,7 @@ template<typename t_type, class t_allocator> class tree_iterator;
 template<typename t_type, class t_allocator> class preorder_tree_iterator;
 }
 }
-
+/*
 namespace std
 {
 template<typename t_type, class t_allocator>
@@ -88,7 +88,7 @@ ext::detail::preorder_tree_iterator<t_type, t_allocator> begin(ext::tree<t_type,
 template<typename t_type, class t_allocator>
 ext::detail::preorder_tree_iterator<t_type, t_allocator> end(ext::tree<t_type, t_allocator>& np_tree);
 }
-
+*/
 namespace ext
 {
 
@@ -394,7 +394,7 @@ private:
 	node_type* mv_position;
 	tree_type* mv_tree;
 
-public:
+private:
 	// Note: I had to make this public to get round a problem implementing persistence - it should be private
 	// you cannot create a valid iterator except by calling an tree method that returns one
 	// constructor used by tree to create a non-null iterator
@@ -406,7 +406,7 @@ public:
 		: mv_position(n_node), mv_tree(n_tree)
 	{}
 
-	
+public:
 	~tree_iterator()
 	{}
 
