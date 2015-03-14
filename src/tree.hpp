@@ -385,23 +385,24 @@ public:
 
 	typedef tree<value_type, allocator_type> 		tree_type;
 	typedef tree_node<value_type, allocator_type> 	node_type;
+	typedef tree_iterator<value_type, allocator_type> 	iterator_type;
 	typedef tree_node<value_type, allocator_type>* 	node_pointer;
 
 	friend class tree<t_type, t_allocator>;
 	friend class detail::preorder_tree_iterator<t_type, t_allocator>;
 	
-private:
+public:
 	node_type* mv_position;
 	tree_type* mv_tree;
+
+	explicit tree_iterator()
+		: mv_position(nullptr), mv_tree(nullptr)
+	{}
 
 private:
 	// Note: I had to make this public to get round a problem implementing persistence - it should be private
 	// you cannot create a valid iterator except by calling an tree method that returns one
 	// constructor used by tree to create a non-null iterator
-	explicit tree_iterator()
-		: mv_position(nullptr), mv_tree(nullptr)
-	{}
-
 	explicit tree_iterator(node_type* n_node, tree_type* n_tree)
 		: mv_position(n_node), mv_tree(n_tree)
 	{}
@@ -410,33 +411,49 @@ public:
 	~tree_iterator()
 	{}
 
-
-	// constructor used by tree to create an end iterator
-	//explicit tree_iterator(const tree<T>* owner);
-
-	// used to create an alias of an iterator
-	//explicit tree_iterator(const safe_iterator<tree<T>, tree_node<T> >& iterator);
-
 public:
-
-	
 	// Type conversion methods allow const_iterator and iterator to be converted
 	//const_iterator constify(void) const;
 	//iterator deconstify(void) const;
-	//bool operator == (const this_iterator& r) const;
-	//bool operator != (const this_iterator& r) const;
 
-	reference operator*(void) const
-	//	throw(null_dereference,end_dereference)
+	bool operator==(const iterator_type& n_iterator) const
 	{
-		//this->assert_valid();
+		return ( (mv_position == n_iterator.mv_position) and (mv_tree == n_iterator.mv_tree) );
+	}
+
+	bool operator!=(const iterator_type& n_iterator) const
+	{
+		// test for iterator inequality
+		return (!this->operator!=(n_iterator));
+	}
+
+	pointer operator->()
+	{
+		assert (mv_position != nullptr);
+		return (mv_position->mv_data);
+	}
+
+	const_pointer operator->() const
+	{
+		assert (mv_position != nullptr);
+		return (mv_position->mv_data);
+	}
+
+	reference operator*()
+	{
+		assert (mv_position != nullptr);
+		assert (mv_position->mv_data != nullptr);
 		return *(mv_position->mv_data);
 	}
 
-	//pointer operator->(void) const
-	//throw(null_dereference,end_dereference);
+	const_reference operator*() const
+	{
+		assert (mv_position != nullptr);
+		assert (mv_position->mv_data != nullptr);
+		return *(mv_position->mv_data);
+	}
 
-};
+}; // end of class tree_iterator
 
 } // end of namespace detail
 

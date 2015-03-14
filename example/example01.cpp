@@ -22,17 +22,33 @@ using namespace ext;
 
 int main()
 {
+	/*
+	std::vector<int> myvector;
+  	for (int i=1; i<=5; i++) myvector.push_back(i);
+	
+	std::vector<int>::iterator itvb = myvector.begin();
+	std::vector<int>::iterator itve = myvector.end();
+	std::vector<int>::iterator itv2;
+
+	cout << "itvb" << *itvb << endl;
+	cout << "itve" << *itve << endl;
+	//cout << "itv2" << *itv2 << endl;
+*/
+
 	tree<int> ts;
 	tree<int>::iterator root = ts.set_root(0);
 
 	cout << *root << endl;
+	tree<int>::iterator nx;	
 	tree<int>::iterator n1 = ts.insert_child(root, 1);
 	tree<int>::iterator n2 = ts.insert_child(root, 2);
-	auto n3 = ts.insert_child(root, 3);
+	tree<int>::iterator n3 = ts.insert_child(root, 3);
+	//auto n3 = ts.insert_child(root, 3);
 
-	cout << *n1 << endl;
-	cout << *n2 << endl;
-	cout << *n3 << endl;
+	cout << "n1: " << *n1 << endl;
+	cout << "n2: " << *n2 << endl;
+	cout << "n3: " << *n3 << endl;
+	//cout << "nx: " << *nx << endl;
 
 /*
 	tree<int>::preorder_iterator it1(&ts);
@@ -40,6 +56,7 @@ int main()
 	cout << *it1 << endl;
 */
 
+	tree<int>::preorder_iterator itn;
 	tree<int>::preorder_iterator itb = std::begin(ts);
 	tree<int>::preorder_iterator ite = std::end(ts);
 	//tree<int>::preorder_iterator it2 = n2;
@@ -63,7 +80,7 @@ int main()
 	{
 		cout << "x: " << e << endl;
 	}
-
+/*
 	tree<int>::preorder_iterator cResult;
 	cout << "find 40 through custom<int>: ";
 	cResult = find(std::begin(ts), std::end(ts), 2);
@@ -74,7 +91,7 @@ int main()
 	cResult = max_element(std::begin(ts), std::end(ts));
 	cout << *cResult << endl;
 	cout << endl;
-
+*/
 	return 0;
 }
 
