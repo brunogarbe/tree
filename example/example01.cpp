@@ -109,11 +109,10 @@ int main()
     }
 	cout << "!" << endl;
 
-
-    // level iterator
-    cout << "% ";
-    postorder_iterator<string> it4(ts);
-    for(it4 = ts->mv_root; it4 != ts->mv_dummy_end; ++it4)
+*/
+    // post order iterator
+    cout << "%" << endl;
+	for(tree<string>::postorder_iterator it4 = ext::begin_post(*ts2); it4 != ext::end_post(*ts2); ++it4)
     {
         cout << "" << *it4 << " ";
     }
@@ -121,7 +120,7 @@ int main()
 
 
 	//cout << ts->depth(ts->preorder_last_node()) << endl;
-*/
+
     save_tree_file<string>("teste.txt", ts2);
 
 	return 0;
