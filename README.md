@@ -1,2 +1,2 @@
 # tree
-An STL-style k-ary tree class for C++.
+An STL-style k-ary tree class for c++11.

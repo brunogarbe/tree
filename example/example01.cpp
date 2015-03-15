@@ -50,11 +50,6 @@ int main()
 	cout << "n3: " << *n3 << endl;
 	//cout << "nx: " << *nx << endl;
 
-/*
-	tree<int>::preorder_iterator it1(&ts);
-	it1 = root;
-	cout << *it1 << endl;
-*/
 
 	tree<int>::preorder_iterator itn;
 	tree<int>::preorder_iterator itb = std::begin(ts);

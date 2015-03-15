@@ -78,17 +78,7 @@ template<typename t_type, class t_allocator> class tree_iterator;
 template<typename t_type, class t_allocator> class preorder_tree_iterator;
 }
 }
-/*
-namespace std
-{
-template<typename t_type, class t_allocator>
-ext::detail::preorder_tree_iterator<t_type, t_allocator> begin(ext::tree<t_type, t_allocator>& np_tree);
 
-
-template<typename t_type, class t_allocator>
-ext::detail::preorder_tree_iterator<t_type, t_allocator> end(ext::tree<t_type, t_allocator>& np_tree);
-}
-*/
 namespace ext
 {
 
@@ -143,6 +133,12 @@ public:
 		mv_data = mv_allocator.allocate(1);
 		mv_allocator.construct(mv_data, val);
 	}
+
+	// Copy constructor
+	tree_node(const tree_node& n_copy) = delete;
+
+	// Assignment operator
+	tree_node& operator= (const tree_node& n_other) = delete;
 
 	// Destructor
 	~tree_node()
@@ -231,10 +227,6 @@ public:
 		swap(*this, other);
 	}
 
-	// destructor
-	~tree()
-	{}
-
 	// assignment operator
 	tree_type& operator= (tree_type s) // the pass-by-value parameter serves as a temporary
 	{
@@ -242,21 +234,11 @@ public:
 		return *this;
 	}// Old resources released when destructor of s is called.
 
+	// destructor
+	~tree()
+	{}
 
-	/*
-		template<>
-	  MyArray<T>::operator=( const MyArray& rhs ) {
-	      // First, make a copy of the right-hand side
-	      MyArray tmp( rhs );
-
-	      // Now, swap the data members with the temporary:
-	      std::swap( numElements, tmp.numElements );
-	      std::swap( pElements, tmp.pElements );
-
-	      return *this;
-	  }
-	*/
-
+public:
 	// Allocator
 	/*
 	get_allocator
@@ -274,7 +256,6 @@ public:
 		//assert (0 == 1);
 		return true;
 	}
-
 
 	//Modifiers:
 	void clear()
@@ -408,6 +389,11 @@ private:
 	{}
 
 public:
+	tree_iterator(const tree_iterator& n_copy) = default;
+	tree_iterator(tree_iterator&& n_copy) = default;
+	tree_iterator& operator= (const tree_iterator& n_other) = default;
+	tree_iterator& operator= (tree_iterator&& n_other) = default;
+
 	~tree_iterator()
 	{}
 
@@ -561,6 +547,22 @@ public:
 
 		mv_incrementIterator();
 	}
+
+	/*
+	tree_iterator& operator= (const tree_iterator& n_other)
+    {
+        if (this != &n_other) // protect against invalid self-assignment
+        {
+           	mv_position = n_other.mv_position;
+			mv_tree = n_other.mv_tree;
+
+        }
+
+        // by convention, always return *this
+        return *this;
+    }
+*/
+
 
 	void operator=(const typename tree<t_type, t_allocator>::node_pointer& n_node )
 	{
