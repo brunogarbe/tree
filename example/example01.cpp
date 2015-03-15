@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "tree.hpp"
+#include "tree_util.hpp"
 
 struct print
 {
@@ -70,6 +71,58 @@ int main()
 	cResult = max_element(std::begin(ts), std::end(ts));
 	cout << *cResult << endl;
 	cout << endl;
+
+
+	// load the tree
+    tree<string>* ts2 = load_tree_file<string>("../test/out.txt");
+
+    // print the version
+    cout << EXT_TREE_VERSION_STR << endl;
+
+
+	// preorder iterator
+    cout << "@ ";
+	//preorder_iterator<string> it(ts);
+    for(tree<string>::preorder_iterator itp = std::begin(*ts2); itp != std::end(*ts2); ++itp)
+    {
+        cout << "" << *itp << " ";
+    }
+	cout << "!" << endl;
+
+/*
+    // parent iterator
+    cout << "& ";
+	parent_iterator<string> it2(ts);
+    for(it2 = ts->begin(); it2 != ts->end(); ++it2)
+    {
+        cout << "" << *it2 << " ";
+    }
+	cout << "!" << endl;
+
+
+    // level iterator
+    cout << "$ ";
+	levelorder_iterator<string> it3(ts);
+    for(it3 = ts->begin(); it3 != ts->end(); ++it3)
+    {
+        cout << "" << *it3 << " ";
+    }
+	cout << "!" << endl;
+
+
+    // level iterator
+    cout << "% ";
+    postorder_iterator<string> it4(ts);
+    for(it4 = ts->mv_root; it4 != ts->mv_dummy_end; ++it4)
+    {
+        cout << "" << *it4 << " ";
+    }
+	cout << "!" << endl;
+
+
+	//cout << ts->depth(ts->preorder_last_node()) << endl;
+*/
+    save_tree_file<string>("teste.txt", ts2);
 
 	return 0;
 }

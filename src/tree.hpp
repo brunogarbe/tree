@@ -316,6 +316,19 @@ public:
 	}
 
 	template<typename t_iterator>
+	size_type depth(t_iterator it)
+    {
+        node_pointer node_tmp = it;
+        int counter = 0;
+        while(node_tmp->parent != nullptr)
+        {
+            node_tmp = node_tmp->parent;
+            counter++;
+        }
+        return counter;
+    }
+
+	template<typename t_iterator>
 	void erase(const t_iterator& n_sibling)
 	{
 		assert (0 == 1);
