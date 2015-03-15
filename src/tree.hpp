@@ -47,8 +47,8 @@
 #define EXT_TREE_MINOR_VERSION 1
 #define EXT_TREE_MINOR_VERSION_STR "1"
 
-#define EXT_TREE_BUILD_NUMBER 9
-#define EXT_TREE_BUILD_NUMBER_STR "9"
+#define EXT_TREE_BUILD_NUMBER 10
+#define EXT_TREE_BUILD_NUMBER_STR "10"
 
 #define EXT_TREE_VERSION_STR EXT_TREE_MAJOR_VERSION_STR "." \
 	EXT_TREE_MINOR_VERSION_STR "." EXT_TREE_BUILD_NUMBER_STR
@@ -482,10 +482,27 @@ private:
 	}
 
 public:
-	reference operator*() const
+	pointer operator->()
 	{
-		// return designated object
-		// TODO: ASSERT		
+		assert (mv_position != nullptr);
+		return *mv_position;
+	}
+
+	const_pointer operator->() const
+	{
+		assert (mv_position != nullptr);
+		return *mv_position;
+	}
+
+	reference operator*()
+	{
+		assert (mv_position != nullptr);		
+		return **mv_position;
+	}
+
+	const_reference operator*() const
+	{
+		assert (mv_position != nullptr);		
 		return **mv_position;
 	}
 
@@ -503,43 +520,23 @@ public:
 		return (_Tmp);
 	}
 
-	bool operator==(const tree_iterator<t_type, t_allocator>& _Right) const
+
+	template <class t_iterator>
+	bool operator==(const t_iterator& n_iterator) const
 	{
-		return (this->mv_position == _Right.mp_node);
+		return ( mv_position == n_iterator.mv_position );
 	}
 
-	bool operator==(const preorder_tree_iterator<t_type, t_allocator>& _Right) const
+	template <class t_iterator>
+	bool operator!=(const t_iterator& n_iterator) const
 	{
-		return (this->mv_position == _Right.mv_position);
+		return (mv_position != n_iterator.mv_position);
 	}
 
-	bool operator!=(const tree_iterator<t_type, t_allocator>& _Right) const
+	template <class t_iterator>
+	void operator=(const t_iterator& n_node )
 	{
-		// test for iterator inequality
-		return (!(this->mv_position == _Right.mp_node));
-	}
-
-	bool operator!=(const preorder_tree_iterator<t_type, t_allocator>& _Right) const
-	{
-		// test for iterator inequality
-		return (!(this->mv_position == _Right.mv_position));
-	}
-
-	void operator=(const tree_iterator<t_type, t_allocator>& n_node )
-	{
-		this->mv_position = n_node.mp_node;
-
-		// A common idiom for clearing standard containers is swapping with an empty
-		// version of the container:
-		std::stack<typename tree_type::node_pointer>().swap(mv_stack);
-		mv_stack.push(this->mv_position);
-
-		mv_incrementIterator();
-	}
-
-	void operator=(const typename tree<t_type, t_allocator>::node_pointer& n_node )
-	{
-		this->mv_position = n_node;
+		mv_position = n_node.mv_position;
 
 		// A common idiom for clearing standard containers is swapping with an empty
 		// version of the container:
