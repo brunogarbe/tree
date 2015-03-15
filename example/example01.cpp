@@ -113,17 +113,23 @@ int main()
 	}
 	cout << "!" << endl;
 
-	/*
-	    // parent iterator
-	    cout << "& ";
-		parent_iterator<string> it2(ts);
-	    for(it2 = ts->begin(); it2 != ts->end(); ++it2)
-	    {
-	        cout << "" << *it2 << " ";
-	    }
-		cout << "!" << endl;
 
-	*/
+	// parent iterator
+	tree<string>::preorder_iterator result;
+	result = find(std::begin(*ts2), std::end(*ts2), "33");
+	cout << *result << endl;
+	cout << endl;
+
+
+	cout << "$" << endl;
+	//tree<string>::parent_iterator it7;
+	for(tree<string>::parent_iterator it7 = result; it7 != ext::end_parent(*ts2); ++it7)
+		//for(it7 = result; it7 != ext::end_parent(*ts2); ++it7)
+	{
+		cout << "" << *it7 << " ";
+	}
+	cout << "!" << endl;
+
 
 
 	save_tree_file<string>("teste.txt", ts2);

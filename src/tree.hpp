@@ -47,8 +47,8 @@
 #define EXT_TREE_MINOR_VERSION 1
 #define EXT_TREE_MINOR_VERSION_STR "1"
 
-#define EXT_TREE_BUILD_NUMBER 10
-#define EXT_TREE_BUILD_NUMBER_STR "10"
+#define EXT_TREE_BUILD_NUMBER 17
+#define EXT_TREE_BUILD_NUMBER_STR "17"
 
 #define EXT_TREE_VERSION_STR EXT_TREE_MAJOR_VERSION_STR "." \
 	EXT_TREE_MINOR_VERSION_STR "." EXT_TREE_BUILD_NUMBER_STR
@@ -79,6 +79,7 @@ template<typename t_type, class t_allocator> class preorder_tree_iterator;
 template<typename t_type, class t_allocator> class postorder_tree_iterator;
 template<typename t_type, class t_allocator> class levelorder_tree_iterator;
 template<typename t_type, class t_allocator> class leaf_tree_iterator;
+template<typename t_type, class t_allocator> class parent_tree_iterator;
 } // end of namespace detail
 
 template<typename t_type, class t_allocator>
@@ -98,6 +99,12 @@ ext::detail::leaf_tree_iterator<t_type, t_allocator> begin_leaf(ext::tree<t_type
 
 template<typename t_type, class t_allocator>
 ext::detail::leaf_tree_iterator<t_type, t_allocator> end_leaf(ext::tree<t_type, t_allocator>& np_tree);
+
+template<typename t_type, class t_allocator>
+ext::detail::parent_tree_iterator<t_type, t_allocator> begin_parent(ext::tree<t_type, t_allocator>& np_tree);
+
+template<typename t_type, class t_allocator>
+ext::detail::parent_tree_iterator<t_type, t_allocator> end_parent(ext::tree<t_type, t_allocator>& np_tree);
 
 } // end of namespace ext
 
@@ -142,6 +149,7 @@ public:
 	friend class detail::postorder_tree_iterator<value_type, allocator_type>;
 	friend class detail::levelorder_tree_iterator<value_type, allocator_type>;
 	friend class detail::leaf_tree_iterator<value_type, allocator_type>;
+	friend class detail::parent_tree_iterator<value_type, allocator_type>;
 
 private:
 	node_type* 			parent;
@@ -228,7 +236,7 @@ public:
 	typedef 	detail::postorder_tree_iterator<value_type, allocator_type> 	postorder_iterator;
 	typedef 	detail::levelorder_tree_iterator<value_type, allocator_type> 	levelorder_iterator;
 	typedef 	detail::leaf_tree_iterator<value_type, allocator_type> 			leaf_iterator;
-
+	typedef 	detail::parent_tree_iterator<value_type, allocator_type> 		parent_iterator;
 
 public:
 	node_pointer mv_root;
@@ -1105,27 +1113,149 @@ private:
 	{
 		//while ((mv_position != nullptr) or (mv_position->first_child != nullptr))
 		//{
-			if(!mv_stack.empty())
+		if(!mv_stack.empty())
+		{
+			do
 			{
-				do
-				{
-					this->mv_position = mv_stack.top();
-					mv_stack.pop();
-					// right
-					if (this->mv_position->next_sibling != nullptr)
-						mv_stack.push(this->mv_position->next_sibling);
+				this->mv_position = mv_stack.top();
+				mv_stack.pop();
+				// right
+				if (this->mv_position->next_sibling != nullptr)
+					mv_stack.push(this->mv_position->next_sibling);
 
-					// left
-					if (this->mv_position->first_child != nullptr)
-						mv_stack.push(this->mv_position->first_child);
-				}
-				while(mv_position->first_child != nullptr);
+				// left
+				if (this->mv_position->first_child != nullptr)
+					mv_stack.push(this->mv_position->first_child);
 			}
-			else
-			{
-				this->mv_position = nullptr;
-			}
+			while(mv_position->first_child != nullptr);
+		}
+		else
+		{
+			this->mv_position = nullptr;
+		}
 		//}
+	}
+}; // end of class leaf_iterator
+
+
+// ******1*********2*********3*********4*********5*********6*********7*********8*********9*********0*********
+/*! \brief A test class.
+    A more detailed class description.
+*/
+template<typename t_type, class t_allocator = std::allocator<t_type> >
+class parent_tree_iterator
+{
+public:
+	// Member typedefs
+	typedef 		t_type 			value_type;
+	typedef 		t_type* 		pointer;
+	typedef 		t_type& 		reference;
+	typedef const 	t_type* 		const_pointer;
+	typedef const 	t_type& 		const_reference;
+	typedef 		t_allocator 	allocator_type;
+	typedef 		std::size_t 	size_type;
+	typedef 		std::ptrdiff_t 	difference_type;
+
+	typedef std::forward_iterator_tag 						iterator_category;
+	typedef tree<value_type, allocator_type> 				tree_type;
+	typedef tree_node<value_type, allocator_type> 			node_type;
+	typedef tree_node<value_type, allocator_type>* 			node_pointer;
+	typedef parent_tree_iterator<t_type, t_allocator> 		iterator_type;
+
+	friend iterator_type ext::begin_parent<value_type, allocator_type>(tree_type& np_tree);
+	friend iterator_type ext::end_parent<value_type, allocator_type>(tree_type& np_tree);
+
+public:
+	tree_type* mv_tree;
+	node_pointer mv_position;
+	//stack<node_pointer> mv_stack;
+
+public:
+	parent_tree_iterator()
+		: mv_tree(nullptr), mv_position(nullptr)
+	{}
+
+	template <class t_iterator>
+	parent_tree_iterator(t_iterator n_iterator)
+	//: mv_tree(nullptr), mv_position(nullptr)
+	{
+		mv_position = n_iterator.mv_position;
+	}
+
+private:
+	parent_tree_iterator(tree_type* n_tree)
+		: mv_tree(n_tree), mv_position(nullptr)
+	{}
+
+	parent_tree_iterator(tree_type* n_tree, node_pointer n_position)
+		: mv_tree(n_tree), mv_position(n_position)
+	{
+		//mv_stack.push(this->mv_position);
+		//mv_incrementIterator();
+	}
+
+public:
+	pointer operator->()
+	{
+		assert (mv_position != nullptr);
+		return *mv_position;
+	}
+
+	const_pointer operator->() const
+	{
+		assert (mv_position != nullptr);
+		return *mv_position;
+	}
+
+	reference operator*()
+	{
+		assert (mv_position != nullptr);
+		return **mv_position;
+	}
+
+	const_reference operator*() const
+	{
+		assert (mv_position != nullptr);
+		return **mv_position;
+	}
+
+	parent_tree_iterator& operator++()
+	{
+		mv_incrementIterator();
+		return (*this);
+	}
+
+	parent_tree_iterator operator++(int)
+	{
+		// postincrement
+		parent_tree_iterator _Tmp = *this;
+		++(*this);
+		return (_Tmp);
+	}
+
+
+	template <class t_iterator>
+	bool operator==(const t_iterator& n_iterator) const
+	{
+		return ( mv_position == n_iterator.mv_position );
+	}
+
+	template <class t_iterator>
+	bool operator!=(const t_iterator& n_iterator) const
+	{
+		return (mv_position != n_iterator.mv_position);
+	}
+
+	template <class t_iterator>
+	void operator=(const t_iterator& n_node )
+	{
+		mv_position = n_node.mv_position;
+	}
+
+private:
+	void mv_incrementIterator()
+	{
+		mv_position = mv_position->parent;
 	}
 }; // end of class leaf_iterator
 
@@ -1206,6 +1336,19 @@ ext::detail::leaf_tree_iterator<t_type, t_allocator> end_leaf(ext::tree<t_type, 
 {
 	return ext::detail::leaf_tree_iterator<t_type, t_allocator>(&np_tree);
 }
+
+template<typename t_type, class t_allocator>
+ext::detail::parent_tree_iterator<t_type, t_allocator> begin_parent(ext::tree<t_type, t_allocator>& np_tree)
+{
+	return ext::detail::parent_tree_iterator<t_type, t_allocator>(&np_tree, np_tree.mv_root);
+}
+
+template<typename t_type, class t_allocator>
+ext::detail::parent_tree_iterator<t_type, t_allocator> end_parent(ext::tree<t_type, t_allocator>& np_tree)
+{
+	return ext::detail::parent_tree_iterator<t_type, t_allocator>(&np_tree);
+}
+
 
 } // end of namespace ext
 
