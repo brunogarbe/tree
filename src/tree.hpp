@@ -66,9 +66,9 @@
 #include <iterator>
 using namespace std;
 
+// Forward declaration of the classes
 namespace ext
 {
-// Forward declaration of the classes
 template<typename t_type, class t_allocator> class tree;
 
 namespace detail
@@ -76,52 +76,57 @@ namespace detail
 template<typename t_type, class t_allocator> class tree_node;
 template<typename t_type, class t_allocator> class tree_iterator;
 template<typename t_type, class t_allocator> class preorder_tree_iterator;
-}
-}
+} // end of namespace detail
+} // end of namespace ext
+
+namespace std
+{
+template<typename t_type, class t_allocator>
+ext::detail::preorder_tree_iterator<t_type, t_allocator> begin(ext::tree<t_type, t_allocator>& np_tree);
+
+template<typename t_type, class t_allocator>
+ext::detail::preorder_tree_iterator<t_type, t_allocator> end(ext::tree<t_type, t_allocator>& np_tree);
+} // end of namespace std
+
+
 
 namespace ext
 {
 
-// ******1*********2*********3*********4*********5*********6*********7*********8*********9*********0*********
-// Tree node
-
-/*! \brief A test class.
-    A more detailed class description.
-*/
-
 namespace detail
 {
 
+// ******1*********2*********3*********4*********5*********6*********7*********8*********9*********0*********
+/*! \brief A test class.
+    A more detailed class description.
+*/
 template <class t_type, class t_allocator = std::allocator<t_type> >
 class tree_node
 {
 public:
-	typedef t_type 									value_type;
-	typedef t_type* 								pointer;
-	typedef t_type& 								reference;
-	typedef const t_type* 							const_pointer;
-	typedef const t_type& 							const_reference;
-	typedef t_allocator 							allocator_type;
-	typedef tree_node<value_type, allocator_type> 	node_type;
-	typedef tree_node<value_type, allocator_type>* 	node_pointer;
+	typedef 		t_type 			value_type;
+	typedef 		t_type* 		pointer;
+	typedef 		t_type& 		reference;
+	typedef const 	t_type* 		const_pointer;
+	typedef const 	t_type& 		const_reference;
+	typedef 		t_allocator 	allocator_type;
+
+	typedef 	tree_node<value_type, allocator_type> 	node_type;
 
 	friend class tree<value_type, allocator_type>;
 	friend class detail::tree_iterator<value_type, allocator_type>;
 	friend class detail::preorder_tree_iterator<value_type, allocator_type>;
 
 private:
-	node_pointer parent;
-	node_pointer first_child;
-	node_pointer last_child;
-	node_pointer prev_sibling;
-	node_pointer next_sibling;
+	node_type* 			parent;
+	node_type* 			first_child;
+	node_type* 			last_child;
+	node_type* 			prev_sibling;
+	node_type* 			next_sibling;
+	pointer 			mv_data;
+	allocator_type 		mv_allocator;
 
-	pointer mv_data;
-
-	/// Allocator.
-	allocator_type mv_allocator;
-
-public:
+private:
 	// 	Constructors:
 	explicit tree_node(const t_type& val = t_type())
 		:	parent(nullptr),
@@ -134,13 +139,10 @@ public:
 		mv_allocator.construct(mv_data, val);
 	}
 
-	// Copy constructor
 	tree_node(const tree_node& n_copy) = delete;
 
-	// Assignment operator
 	tree_node& operator= (const tree_node& n_other) = delete;
 
-	// Destructor
 	~tree_node()
 	{
 		mv_allocator.destroy(mv_data);
@@ -176,31 +178,27 @@ public:
 
 
 // ******1*********2*********3*********4*********5*********6*********7*********8*********9*********0*********
-// Tree node
-
 /*! \brief A test class.
     A more detailed class description.
 */
-
-// Declare a custom container
 template<typename t_type, class t_allocator = std::allocator<t_type> >
 class tree
 {
 public:
 	// Member typedefs
-	typedef t_type 									value_type;
-	typedef t_type* 								pointer;
-	typedef t_type& 								reference;
-	typedef const t_type* 							const_pointer;
-	typedef const t_type& 							const_reference;
-	typedef t_allocator 							allocator_type;
-	typedef std::size_t 							size_type;
-	typedef tree<value_type, allocator_type> 		tree_type;
-	
-	typedef detail::tree_node<value_type, allocator_type> 			node_type;
-	typedef detail::tree_node<value_type, allocator_type>* 		node_pointer;
-	typedef detail::tree_iterator<value_type, allocator_type> 		iterator;
-	typedef detail::preorder_tree_iterator<value_type, allocator_type> 	preorder_iterator;
+	typedef 		t_type 			value_type;
+	typedef 		t_type* 		pointer;
+	typedef 		t_type& 		reference;
+	typedef const 	t_type* 		const_pointer;
+	typedef const 	t_type& 		const_reference;
+	typedef 		t_allocator 	allocator_type;
+	typedef 		std::size_t 	size_type;
+
+	typedef 	tree<value_type, allocator_type> 							tree_type;
+	typedef 	detail::tree_node<value_type, allocator_type> 				node_type;
+	typedef 	detail::tree_node<value_type, allocator_type>* 				node_pointer;
+	typedef 	detail::tree_iterator<value_type, allocator_type> 			iterator;
+	typedef 	detail::preorder_tree_iterator<value_type, allocator_type> 	preorder_iterator;
 
 public:
 	node_pointer mv_root;
@@ -215,34 +213,32 @@ public:
 		: mv_root(val)
 	{}
 
-	// copy constructor
 	explicit tree(const tree_type& copy_from_me)
 		: mv_root(nullptr)
 	{}
 
-	// move constructor
-	tree(tree&& other)
+	explicit tree(tree&& other)
 		: tree() // initialize via default constructor, C++11 only
 	{
 		swap(*this, other);
 	}
 
-	// assignment operator
 	tree_type& operator= (tree_type s) // the pass-by-value parameter serves as a temporary
 	{
 		s.swap (*this); // Non-throwing swap
 		return *this;
-	}// Old resources released when destructor of s is called.
+	}
 
-	// destructor
 	~tree()
 	{}
 
 public:
 	// Allocator
-	/*
-	get_allocator
-	*/
+	allocator_type get_allocator() const noexcept
+	{
+		//assert (0 == 1);
+		return mv_root->mv_allocator;
+	}
 
 	// Capacity methods
 	size_type size() const
@@ -268,7 +264,7 @@ public:
 		assert (0 == 1);
 	}
 
-	detail::tree_iterator<value_type, allocator_type> set_root(value_type x)
+	iterator set_root(value_type x)
 	{
 		if(mv_root != nullptr)
 		{
@@ -278,12 +274,12 @@ public:
 
 		mv_root = new node_type(x);
 
-		return detail::tree_iterator<value_type, allocator_type>(mv_root, this);
+		return iterator(mv_root, this);
 	}
 
-	detail::tree_iterator<value_type, allocator_type> get_root()
+	iterator get_root()
 	{
-		return detail::tree_iterator<value_type, allocator_type>(mv_root, this);
+		return iterator(mv_root, this);
 	}
 
 
@@ -333,45 +329,37 @@ public:
 
 }; // end of class tree
 
-/*
-Non-member function overloads
-		relational operators
-*/
 
 namespace detail
 {
 
 // ******1*********2*********3*********4*********5*********6*********7*********8*********9*********0*********
-// Tree node
-
 /*! \brief A test class.
     A more detailed class description.
 */
-
-// Trivial iterator
 template <class t_type, class t_allocator = std::allocator<t_type> >
 class tree_iterator
 {
 public:
 	// Member typedefs
-	typedef t_type 									value_type;
-	typedef t_type* 								pointer;
-	typedef t_type& 								reference;
-	typedef const t_type* 							const_pointer;
-	typedef const t_type& 							const_reference;
-	typedef t_allocator 							allocator_type;
-	typedef std::size_t 							size_type;
-	typedef std::ptrdiff_t 							difference_type;
+	typedef 		t_type 			value_type;
+	typedef 		t_type* 		pointer;
+	typedef 		t_type& 		reference;
+	typedef const 	t_type* 		const_pointer;
+	typedef const 	t_type& 		const_reference;
+	typedef 		t_allocator 	allocator_type;
+	typedef 		std::size_t 	size_type;
+	typedef 		std::ptrdiff_t	difference_type;
 	//typedef std::bidirectional_iterator_tag 		iterator_category;
 
-	typedef tree<value_type, allocator_type> 		tree_type;
-	typedef tree_node<value_type, allocator_type> 	node_type;
+	typedef tree<value_type, allocator_type> 			tree_type;
+	typedef tree_node<value_type, allocator_type> 		node_type;
 	typedef tree_iterator<value_type, allocator_type> 	iterator_type;
-	typedef tree_node<value_type, allocator_type>* 	node_pointer;
+	typedef tree_node<value_type, allocator_type>* 		node_pointer;
 
 	friend class tree<t_type, t_allocator>;
 	friend class detail::preorder_tree_iterator<t_type, t_allocator>;
-	
+
 public:
 	node_type* mv_position;
 	tree_type* mv_tree;
@@ -381,9 +369,6 @@ public:
 	{}
 
 private:
-	// Note: I had to make this public to get round a problem implementing persistence - it should be private
-	// you cannot create a valid iterator except by calling an tree method that returns one
-	// constructor used by tree to create a non-null iterator
 	explicit tree_iterator(node_type* n_node, tree_type* n_tree)
 		: mv_position(n_node), mv_tree(n_tree)
 	{}
@@ -447,55 +432,60 @@ public:
 namespace detail
 {
 
-// Declare a custom bidirectional iterator
+// ******1*********2*********3*********4*********5*********6*********7*********8*********9*********0*********
+/*! \brief A test class.
+    A more detailed class description.
+*/
 template<typename t_type, class t_allocator = std::allocator<t_type> >
 class preorder_tree_iterator
 {
 public:
 	// Member typedefs
-	typedef t_type 									value_type;
-	typedef t_type* 								pointer;
-	typedef t_type& 								reference;
-	typedef const t_type* 							const_pointer;
-	typedef const t_type& 							const_reference;
-	typedef t_allocator 							allocator_type;
-	typedef std::size_t 							size_type;
-	typedef std::ptrdiff_t 							difference_type;
-	typedef std::forward_iterator_tag 				iterator_category;
+	typedef 		t_type 			value_type;
+	typedef 		t_type* 		pointer;
+	typedef 		t_type& 		reference;
+	typedef const 	t_type* 		const_pointer;
+	typedef const 	t_type& 		const_reference;
+	typedef 		t_allocator 	allocator_type;
+	typedef 		std::size_t 	size_type;
+	typedef 		std::ptrdiff_t 	difference_type;
 
-	typedef tree<value_type, allocator_type> 		tree_type;
-	typedef tree_node<value_type, allocator_type> 	node_type;
-	typedef tree_node<value_type, allocator_type>* 	node_pointer;
+	typedef std::forward_iterator_tag 						iterator_category;
+	typedef tree<value_type, allocator_type> 				tree_type;
+	typedef tree_node<value_type, allocator_type> 			node_type;
+	typedef tree_node<value_type, allocator_type>* 			node_pointer;
 	typedef preorder_tree_iterator<t_type, t_allocator> 	iterator_type;
 
-/*
-	template<typename T, class U >
-	friend preorder_tree_iterator<T, U> std::begin(ext::tree<T, U>& np_tree);
+	friend iterator_type std::begin<value_type, allocator_type>(tree_type& np_tree);
+	friend iterator_type std::end<value_type, allocator_type>(tree_type& np_tree);
 
-	template<typename T, class U >
-	friend preorder_tree_iterator<T, U> std::end(ext::tree<T, U>& np_tree);
-	//friend iterator_type std::end(tree_type& np_tree);
-*/
 public:
 	tree_type* mv_tree;
-	typename tree_type::node_pointer mv_position;
-
-	stack<typename tree_type::node_pointer> mv_stack;
+	node_pointer mv_position;
+	stack<node_pointer> mv_stack;
 
 public:
 	preorder_tree_iterator()
 		: mv_tree(nullptr), mv_position(nullptr)
 	{}
 
-public:
+private:
 	preorder_tree_iterator(tree_type* n_tree)
 		: mv_tree(n_tree), mv_position(nullptr)
 	{}
+
+	preorder_tree_iterator(tree_type* n_tree, node_pointer n_position)
+		: mv_tree(n_tree), mv_position(n_position)
+	{
+		mv_stack.push(this->mv_position);
+		mv_incrementIterator();
+	}
 
 public:
 	reference operator*() const
 	{
 		// return designated object
+		// TODO: ASSERT		
 		return **mv_position;
 	}
 
@@ -505,15 +495,14 @@ public:
 		return (*this);
 	}
 
-	/*
-	    custom_iterator operator++(int)
-	    {
-	        // postincrement
-	        custom_iterator _Tmp = *this;
-	        ++*this;
-	        return (_Tmp);
-	    }
-	*/
+	preorder_tree_iterator operator++(int)
+	{
+		// postincrement
+		preorder_tree_iterator _Tmp = *this;
+		++(*this);
+		return (_Tmp);
+	}
+
 	bool operator==(const tree_iterator<t_type, t_allocator>& _Right) const
 	{
 		return (this->mv_position == _Right.mp_node);
@@ -547,22 +536,6 @@ public:
 
 		mv_incrementIterator();
 	}
-
-	/*
-	tree_iterator& operator= (const tree_iterator& n_other)
-    {
-        if (this != &n_other) // protect against invalid self-assignment
-        {
-           	mv_position = n_other.mv_position;
-			mv_tree = n_other.mv_tree;
-
-        }
-
-        // by convention, always return *this
-        return *this;
-    }
-*/
-
 
 	void operator=(const typename tree<t_type, t_allocator>::node_pointer& n_node )
 	{
@@ -609,8 +582,8 @@ namespace std
 template<typename t_type, class t_allocator>
 ext::detail::preorder_tree_iterator<t_type, t_allocator> begin(ext::tree<t_type, t_allocator>& np_tree)
 {
-	ext::detail::preorder_tree_iterator<t_type, t_allocator> it(&np_tree);
-	it = np_tree.mv_root;
+	ext::detail::preorder_tree_iterator<t_type, t_allocator> it(&np_tree, np_tree.mv_root);
+	//it = np_tree.mv_root;
 	return it;
 }
 
@@ -619,7 +592,7 @@ ext::detail::preorder_tree_iterator<t_type, t_allocator> end(ext::tree<t_type, t
 {
 	ext::detail::preorder_tree_iterator<t_type, t_allocator> it(&np_tree);
 	//it = nullptr;
-	it.mv_position = nullptr;
+	//it.mv_position = nullptr;
 	return it;
 }
 

@@ -1,5 +1,5 @@
 all:
-	g++ -o ./bin/main.exe ./example/example01.cpp -std=c++11 -I./src
+	g++ -g -o ./bin/main.exe ./example/example01.cpp -std=c++11 -I./src
 
 test: ./bin/test01.exe
 
