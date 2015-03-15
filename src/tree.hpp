@@ -76,6 +76,7 @@ namespace detail
 template<typename t_type, class t_allocator> class tree_node;
 template<typename t_type, class t_allocator> class tree_iterator;
 template<typename t_type, class t_allocator> class preorder_tree_iterator;
+//template<typename t_type, class t_allocator> class postorder_tree_iterator;
 } // end of namespace detail
 } // end of namespace ext
 
