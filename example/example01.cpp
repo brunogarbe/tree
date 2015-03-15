@@ -22,19 +22,6 @@ using namespace ext;
 
 int main()
 {
-	/*
-	std::vector<int> myvector;
-  	for (int i=1; i<=5; i++) myvector.push_back(i);
-	
-	std::vector<int>::iterator itvb = myvector.begin();
-	std::vector<int>::iterator itve = myvector.end();
-	std::vector<int>::iterator itv2;
-
-	cout << "itvb" << *itvb << endl;
-	cout << "itve" << *itve << endl;
-	//cout << "itv2" << *itv2 << endl;
-*/
-
 	tree<int> ts;
 	tree<int>::iterator root = ts.set_root(0);
 
@@ -50,13 +37,10 @@ int main()
 	cout << "n3: " << *n3 << endl;
 	//cout << "nx: " << *nx << endl;
 
-
 	tree<int>::preorder_iterator itn;
 	tree<int>::preorder_iterator itb = std::begin(ts);
 	tree<int>::preorder_iterator ite = std::end(ts);
 	//tree<int>::preorder_iterator it2 = n2;
-
-	//auto ite = std::end(ts);
 
 	cout << *itb << endl;
 
@@ -75,7 +59,7 @@ int main()
 	{
 		cout << "x: " << e << endl;
 	}
-/*
+
 	tree<int>::preorder_iterator cResult;
 	cout << "find 40 through custom<int>: ";
 	cResult = find(std::begin(ts), std::end(ts), 2);
@@ -86,32 +70,6 @@ int main()
 	cResult = max_element(std::begin(ts), std::end(ts));
 	cout << *cResult << endl;
 	cout << endl;
-*/
+
 	return 0;
 }
-
-// std::for_each
-/*
-template<class InputIt, class UnaryFunction>
-UnaryFunction for_each(InputIt first, InputIt last, UnaryFunction f)
-{
-    for (; first != last; ++first) {
-        f(*first);
-    }
-    return f;
-}
-
-The behavior of this template function is equivalent to:
-
-template<class InputIterator, class Function>
-  Function for_each(InputIterator first, InputIterator last, Function fn)
-{
-  while (first!=last) {
-    fn (*first);
-    ++first;
-  }
-  return fn;      // or, since C++11: return move(fn);
-}
-
-*/
-

@@ -11,3 +11,6 @@ dox:
 
 sta:
 	cloc --by-file ./src ./test > ./statics/cloc_$(shell date +"%Y-%m-%d_%H-%M-%S").txt
+
+commit:
+	git rev-list HEAD --count

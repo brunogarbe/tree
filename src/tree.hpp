@@ -47,8 +47,8 @@
 #define EXT_TREE_MINOR_VERSION 1
 #define EXT_TREE_MINOR_VERSION_STR "1"
 
-#define EXT_TREE_BUILD_NUMBER 6
-#define EXT_TREE_BUILD_NUMBER_STR "6"
+#define EXT_TREE_BUILD_NUMBER 9
+#define EXT_TREE_BUILD_NUMBER_STR "9"
 
 #define EXT_TREE_VERSION_STR EXT_TREE_MAJOR_VERSION_STR "." \
 	EXT_TREE_MINOR_VERSION_STR "." EXT_TREE_BUILD_NUMBER_STR
@@ -575,6 +575,7 @@ private:
 
 } // end of namespace ext
 
+
 // start the namespace std for the overload of std::begin and std::end
 namespace std
 {
@@ -582,18 +583,13 @@ namespace std
 template<typename t_type, class t_allocator>
 ext::detail::preorder_tree_iterator<t_type, t_allocator> begin(ext::tree<t_type, t_allocator>& np_tree)
 {
-	ext::detail::preorder_tree_iterator<t_type, t_allocator> it(&np_tree, np_tree.mv_root);
-	//it = np_tree.mv_root;
-	return it;
+	return ext::detail::preorder_tree_iterator<t_type, t_allocator>(&np_tree, np_tree.mv_root);
 }
 
 template<typename t_type, class t_allocator>
 ext::detail::preorder_tree_iterator<t_type, t_allocator> end(ext::tree<t_type, t_allocator>& np_tree)
 {
-	ext::detail::preorder_tree_iterator<t_type, t_allocator> it(&np_tree);
-	//it = nullptr;
-	//it.mv_position = nullptr;
-	return it;
+	return ext::detail::preorder_tree_iterator<t_type, t_allocator>(&np_tree);
 }
 
 template<typename t_type, class t_allocator>
@@ -602,6 +598,7 @@ void swap(ext::tree<t_type, t_allocator>& a, ext::tree<t_type, t_allocator>& b)
 	using std::swap; // bring in swap for built-in types
 
 	assert (0 == 1);
+	// TODO: implementation
 	/*
 	        swap(a.base1, b.base1);
 	        swap(a.base2, b.base2);
