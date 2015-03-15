@@ -27,7 +27,7 @@ int main()
 	tree<int>::iterator root = ts.set_root(0);
 
 	cout << *root << endl;
-	tree<int>::iterator nx;	
+	tree<int>::iterator nx;
 	tree<int>::iterator n1 = ts.insert_child(root, 1);
 	tree<int>::iterator n2 = ts.insert_child(root, 2);
 	tree<int>::iterator n3 = ts.insert_child(root, 3);
@@ -74,61 +74,59 @@ int main()
 
 
 	// load the tree
-    tree<string>* ts2 = load_tree_file<string>("../test/out.txt");
+	tree<string>* ts2 = load_tree_file<string>("../test/out.txt");
 
-    // print the version
-    cout << EXT_TREE_VERSION_STR << endl;
+	// print the version
+	cout << EXT_TREE_VERSION_STR << endl;
 
 
 	// preorder iterator
-    cout << "@ ";
-	//preorder_iterator<string> it(ts);
-    for(tree<string>::preorder_iterator itp = std::begin(*ts2); itp != std::end(*ts2); ++itp)
-    {
-        cout << "" << *itp << " ";
-    }
-	cout << "!" << endl;
-
-/*
-    // parent iterator
-    cout << "& ";
-	parent_iterator<string> it2(ts);
-    for(it2 = ts->begin(); it2 != ts->end(); ++it2)
-    {
-        cout << "" << *it2 << " ";
-    }
-	cout << "!" << endl;
-
-
-    // level iterator
-    cout << "$ ";
-	levelorder_iterator<string> it3(ts);
-    for(it3 = ts->begin(); it3 != ts->end(); ++it3)
-    {
-        cout << "" << *it3 << " ";
-    }
-	cout << "!" << endl;
-
-*/
-    // post order iterator
-    cout << "%" << endl;
-	for(tree<string>::postorder_iterator it4 = ext::begin_post(*ts2); it4 != ext::end_post(*ts2); ++it4)
-    {
-        cout << "" << *it4 << " ";
-    }
+	cout << "@ ";
+	for(tree<string>::preorder_iterator itp = std::begin(*ts2); itp != std::end(*ts2); ++itp)
+	{
+		cout << "" << *itp << " ";
+	}
 	cout << "!" << endl;
 
 	// post order iterator
-    cout << "$" << endl;
-	for(tree<string>::levelorder_iterator it5 = ext::begin_level(*ts2); it5 != ext::end_level(*ts2); ++it5)
-    {
-        cout << "" << *it5 << " ";
-    }
+	cout << "%" << endl;
+	for(tree<string>::postorder_iterator it4 = ext::begin_post(*ts2); it4 != ext::end_post(*ts2); ++it4)
+	{
+		cout << "" << *it4 << " ";
+	}
 	cout << "!" << endl;
 
-	//cout << ts->depth(ts->preorder_last_node()) << endl;
+	// post order iterator
+	cout << "$" << endl;
+	for(tree<string>::levelorder_iterator it5 = ext::begin_level(*ts2); it5 != ext::end_level(*ts2); ++it5)
+	{
+		cout << "" << *it5 << " ";
+	}
+	cout << "!" << endl;
 
-    save_tree_file<string>("teste.txt", ts2);
+
+	// post order iterator
+	cout << "^" << endl;
+	for(tree<string>::leaf_iterator it6 = ext::begin_leaf(*ts2); it6 != ext::end_leaf(*ts2); ++it6)
+	{
+		cout << "" << *it6 << " ";
+	}
+	cout << "!" << endl;
+
+	/*
+	    // parent iterator
+	    cout << "& ";
+		parent_iterator<string> it2(ts);
+	    for(it2 = ts->begin(); it2 != ts->end(); ++it2)
+	    {
+	        cout << "" << *it2 << " ";
+	    }
+		cout << "!" << endl;
+
+	*/
+
+
+	save_tree_file<string>("teste.txt", ts2);
 
 	return 0;
 }
