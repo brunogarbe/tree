@@ -77,6 +77,7 @@ template<typename t_type, class t_allocator> class tree_node;
 template<typename t_type, class t_allocator> class tree_iterator;
 template<typename t_type, class t_allocator> class preorder_tree_iterator;
 template<typename t_type, class t_allocator> class postorder_tree_iterator;
+template<typename t_type, class t_allocator> class levelorder_tree_iterator;
 } // end of namespace detail
 
 template<typename t_type, class t_allocator>
@@ -84,6 +85,12 @@ ext::detail::postorder_tree_iterator<t_type, t_allocator> begin_post(ext::tree<t
 
 template<typename t_type, class t_allocator>
 ext::detail::postorder_tree_iterator<t_type, t_allocator> end_post(ext::tree<t_type, t_allocator>& np_tree);
+
+template<typename t_type, class t_allocator>
+ext::detail::levelorder_tree_iterator<t_type, t_allocator> begin_level(ext::tree<t_type, t_allocator>& np_tree);
+
+template<typename t_type, class t_allocator>
+ext::detail::levelorder_tree_iterator<t_type, t_allocator> end_level(ext::tree<t_type, t_allocator>& np_tree);
 
 } // end of namespace ext
 
@@ -126,6 +133,7 @@ public:
 	friend class detail::tree_iterator<value_type, allocator_type>;
 	friend class detail::preorder_tree_iterator<value_type, allocator_type>;
 	friend class detail::postorder_tree_iterator<value_type, allocator_type>;
+	friend class detail::levelorder_tree_iterator<value_type, allocator_type>;
 
 
 private:
@@ -211,6 +219,8 @@ public:
 	typedef 	detail::tree_iterator<value_type, allocator_type> 				iterator;
 	typedef 	detail::preorder_tree_iterator<value_type, allocator_type> 		preorder_iterator;
 	typedef 	detail::postorder_tree_iterator<value_type, allocator_type> 	postorder_iterator;
+	typedef 	detail::levelorder_tree_iterator<value_type, allocator_type> 	levelorder_iterator;
+
 
 public:
 	node_pointer mv_root;
@@ -782,6 +792,191 @@ private:
 }; // end of class postorder_iterator
 
 
+// ******1*********2*********3*********4*********5*********6*********7*********8*********9*********0*********
+/*! \brief A test class.
+    A more detailed class description.
+*/
+template<typename t_type, class t_allocator = std::allocator<t_type> >
+class levelorder_tree_iterator
+{
+public:
+	// Member typedefs
+	typedef 		t_type 			value_type;
+	typedef 		t_type* 		pointer;
+	typedef 		t_type& 		reference;
+	typedef const 	t_type* 		const_pointer;
+	typedef const 	t_type& 		const_reference;
+	typedef 		t_allocator 	allocator_type;
+	typedef 		std::size_t 	size_type;
+	typedef 		std::ptrdiff_t 	difference_type;
+
+	typedef std::forward_iterator_tag 						iterator_category;
+	typedef tree<value_type, allocator_type> 				tree_type;
+	typedef tree_node<value_type, allocator_type> 			node_type;
+	typedef tree_node<value_type, allocator_type>* 			node_pointer;
+	typedef levelorder_tree_iterator<t_type, t_allocator> 	iterator_type;
+
+	friend iterator_type ext::begin_level<value_type, allocator_type>(tree_type& np_tree);
+	friend iterator_type ext::end_level<value_type, allocator_type>(tree_type& np_tree);
+
+public:
+	tree_type* mv_tree;
+	node_pointer mv_position;
+	//node_pointer mv_current;
+	//stack<node_pointer> mv_stack;
+	deque<typename tree_type::node_pointer> q;
+
+public:
+	levelorder_tree_iterator()
+		: mv_tree(nullptr), mv_position(nullptr)
+	{}
+
+private:
+	levelorder_tree_iterator(tree_type* n_tree)
+		: mv_tree(n_tree), mv_position(nullptr)
+	{}
+
+	levelorder_tree_iterator(tree_type* n_tree, node_pointer n_position)
+		: mv_tree(n_tree), mv_position(n_position)
+	{
+		if (mv_position != nullptr)
+        {
+            q.push_back(mv_position);
+        }
+        if(!q.empty())
+        {
+
+            mv_position = q.front();
+            q.pop_front();
+
+            if (mv_position->next_sibling != nullptr) q.push_front(mv_position->next_sibling);
+            if (mv_position->first_child != nullptr) q.push_back(mv_position->first_child);
+        }
+        else
+        {
+            mv_position = nullptr;
+        }
+	}
+
+public:
+	pointer operator->()
+	{
+		assert (mv_position != nullptr);
+		return *mv_position;
+	}
+
+	const_pointer operator->() const
+	{
+		assert (mv_position != nullptr);
+		return *mv_position;
+	}
+
+	reference operator*()
+	{
+		assert (mv_position != nullptr);		
+		return **mv_position;
+	}
+
+	const_reference operator*() const
+	{
+		assert (mv_position != nullptr);		
+		return **mv_position;
+	}
+
+	levelorder_tree_iterator& operator++()
+	{
+		if(!q.empty())
+        {
+
+            mv_position = q.front();
+            q.pop_front();
+
+            if (mv_position->next_sibling != nullptr)
+            {
+                q.push_front(mv_position->next_sibling);
+            }
+
+            if (mv_position->first_child != nullptr)
+            {
+                q.push_back(mv_position->first_child);
+            }
+        }
+        else
+        {
+            mv_position = nullptr;
+        }
+		return (*this);
+	}
+
+	levelorder_tree_iterator operator++(int)
+	{
+		// postincrement
+		levelorder_tree_iterator _Tmp = *this;
+		++(*this);
+		return (_Tmp);
+	}
+
+
+	template <class t_iterator>
+	bool operator==(const t_iterator& n_iterator) const
+	{
+		return ( mv_position == n_iterator.mv_position );
+	}
+
+	template <class t_iterator>
+	bool operator!=(const t_iterator& n_iterator) const
+	{
+		return (mv_position != n_iterator.mv_position);
+	}
+
+	template <class t_iterator>
+	void operator=(const t_iterator& n_node )
+	{
+        mv_position = n_node.mv_position;
+
+		if (mv_position != nullptr)
+        {
+            q.push_back(mv_position);
+        }
+        if(!q.empty())
+        {
+
+            mv_position = q.front();
+            q.pop_front();
+
+            if (mv_position->next_sibling != nullptr) q.push_front(mv_position->next_sibling);
+            if (mv_position->first_child != nullptr) q.push_back(mv_position->first_child);
+        }
+        else
+        {
+            mv_position = nullptr;
+        }
+	}
+
+private:
+	void mv_incrementIterator()
+	{
+/*
+		if(!mv_stack.empty())
+		{
+			this->mv_position = mv_stack.top();
+			mv_stack.pop();
+			// right
+			if (this->mv_position->next_sibling != nullptr)
+				mv_stack.push(this->mv_position->next_sibling);
+
+			// left
+			if (this->mv_position->first_child != nullptr)
+				mv_stack.push(this->mv_position->first_child);
+		}
+		else
+		{
+			this->mv_position = nullptr;
+		}
+*/
+	}
+}; // end of class postorder_iterator
+
 } // end of namespace detail
 
 } // end of namespace ext
@@ -834,6 +1029,18 @@ template<typename t_type, class t_allocator>
 ext::detail::postorder_tree_iterator<t_type, t_allocator> end_post(ext::tree<t_type, t_allocator>& np_tree)
 {
 	return ext::detail::postorder_tree_iterator<t_type, t_allocator>(&np_tree);
+}
+
+template<typename t_type, class t_allocator>
+ext::detail::levelorder_tree_iterator<t_type, t_allocator> begin_level(ext::tree<t_type, t_allocator>& np_tree)
+{
+	return ext::detail::levelorder_tree_iterator<t_type, t_allocator>(&np_tree, np_tree.mv_root);
+}
+
+template<typename t_type, class t_allocator>
+ext::detail::levelorder_tree_iterator<t_type, t_allocator> end_level(ext::tree<t_type, t_allocator>& np_tree)
+{
+	return ext::detail::levelorder_tree_iterator<t_type, t_allocator>(&np_tree);
 }
 
 } // end of namespace ext

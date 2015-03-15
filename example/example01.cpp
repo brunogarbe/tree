@@ -118,6 +118,13 @@ int main()
     }
 	cout << "!" << endl;
 
+	// post order iterator
+    cout << "$" << endl;
+	for(tree<string>::levelorder_iterator it5 = ext::begin_level(*ts2); it5 != ext::end_level(*ts2); ++it5)
+    {
+        cout << "" << *it5 << " ";
+    }
+	cout << "!" << endl;
 
 	//cout << ts->depth(ts->preorder_last_node()) << endl;
 
